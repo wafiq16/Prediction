@@ -86,6 +86,7 @@ class Ui_Widget(object):
         self.Data = QPushButton(self.widget)
         self.Data.setObjectName(u"Data")
         self.Data.setGeometry(QRect(20, 450, 89, 31))
+
         self.Mean_Cam_1 = QPushButton(self.widget)
         self.Mean_Cam_1.setObjectName(u"Mean_Cam_1")
         self.Mean_Cam_1.setGeometry(QRect(60, 530, 90, 30))
@@ -137,6 +138,7 @@ class Ui_Widget(object):
         self.Camera_1_RGB = QPushButton(self.widget)
         self.Camera_1_RGB.setObjectName(u"Camera_1_RGB")
         self.Camera_1_RGB.setGeometry(QRect(40, 490, 90, 30))
+
         self.Mean_B_Cam_2 = QLineEdit(self.widget)
         self.Mean_B_Cam_2.setObjectName(u"Mean_B_Cam_2")
         self.Mean_B_Cam_2.setGeometry(QRect(650, 650, 113, 29))
@@ -188,6 +190,7 @@ class Ui_Widget(object):
         self.Camera_2_RGB = QPushButton(self.widget)
         self.Camera_2_RGB.setObjectName(u"Camera_2_RGB")
         self.Camera_2_RGB.setGeometry(QRect(530, 490, 90, 30))
+
         self.Next_Data = QPushButton(self.widget)
         self.Next_Data.setObjectName(u"Next_Data")
         self.Next_Data.setGeometry(QRect(1260, 690, 89, 31))
@@ -283,4 +286,3 @@ class Ui_Widget(object):
             "Widget", u"Train", None))
         self.Test.setText(QCoreApplication.translate("Widget", u"Test", None))
     # retranslateUi
-

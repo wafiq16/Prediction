@@ -468,6 +468,12 @@ class App(QWidget):
         self.Camera_1_RGB = QPushButton(self.widget)
         self.Camera_1_RGB.setObjectName(u"Camera_1_RGB")
         self.Camera_1_RGB.setGeometry(QRect(40, 490, 90, 30))
+
+        self.Camera_1_Data = QPushButton(self.widget)
+        self.Camera_1_Data.setObjectName(u"Camera_1_Data")
+        self.Camera_1_Data.setGeometry(QRect(220, 700, 120, 30))
+        self.Camera_1_Data.clicked.connect(self.getParamCam1)
+
         self.Mean_B_Cam_2 = QLineEdit(self.widget)
         self.Mean_B_Cam_2.setObjectName(u"Mean_B_Cam_2")
         self.Mean_B_Cam_2.setGeometry(QRect(650, 650, 113, 29))
@@ -519,6 +525,12 @@ class App(QWidget):
         self.Camera_2_RGB = QPushButton(self.widget)
         self.Camera_2_RGB.setObjectName(u"Camera_2_RGB")
         self.Camera_2_RGB.setGeometry(QRect(530, 490, 90, 30))
+
+        self.Camera_2_Data = QPushButton(self.widget)
+        self.Camera_2_Data.setObjectName(u"Camera_2_Data")
+        self.Camera_2_Data.setGeometry(QRect(720, 700, 120, 30))
+        self.Camera_2_Data.clicked.connect(self.getParamCam2)
+
         self.Next_Data = QPushButton(self.widget)
         self.Next_Data.setObjectName(u"Next_Data")
         self.Next_Data.setGeometry(QRect(1260, 690, 89, 31))
@@ -591,6 +603,8 @@ class App(QWidget):
             QCoreApplication.translate("Widget", u"B", None))
         self.Camera_1_RGB.setText(
             QCoreApplication.translate("Widget", u"Camera 1", None))
+        self.Camera_1_Data.setText(
+            QCoreApplication.translate("Widget", u"Get Cam 1 Data", None))
         self.pushButton_53.setText(
             QCoreApplication.translate("Widget", u"R", None))
         self.pushButton_54.setText(
@@ -609,6 +623,8 @@ class App(QWidget):
             QCoreApplication.translate("Widget", u"G", None))
         self.Camera_2_RGB.setText(
             QCoreApplication.translate("Widget", u"Camera 2", None))
+        self.Camera_2_Data.setText(
+            QCoreApplication.translate("Widget", u"Get Cam 2 Data", None))
         self.Next_Data.setText(QCoreApplication.translate(
             "Widget", u"Next Data", None))
         self.Train.setText(QCoreApplication.translate(
@@ -658,12 +674,18 @@ class App(QWidget):
         self.flagCaptureMic = True
         self.cap_mic_begin = self.begin
         self.cap_mic_end = self.end
+
+        # time.sleep(500)
+
         # print(self.flagCaptureCam)
 
     def captureCamEvent(self, event):
         self.flagCaptureCam = True
         self.cap_cam_begin = self.begin
         self.cap_cam_end = self.end
+
+        # time.sleep(500)
+
         # print(self.flagCaptureMic)
 
     def nextDataEvent(self, event):
@@ -675,6 +697,31 @@ class App(QWidget):
 
     def getParamCam(self, event):
 
+        sens_R = self.RGB_Red.text()
+        sens_G = self.RGB_Green.text()
+        sens_B = self.RGB_Blue.text()
+
+        class_ = self.Class_Type.text()
+        concentration = self.Class_Concentration.text()
+        row = [self.mean_cam_R, self.mean_cam_G, self.mean_cam_B, self.max_cam_R, self.max_cam_G, self.max_cam_B,
+               self.mean_mic_R, self.mean_mic_G, self.mean_mic_B, self.mean_mic_R, self.mean_mic_G, self.mean_mic_B, sens_R, sens_G, sens_B, class_, concentration]
+
+        print(row)
+        myData = open('data/data_alga.csv', 'w')
+        # writer = csv.writer(f)
+        csv_writer = csv.writer(myData)
+        csv_writer.writerow(row)
+        myData.close()
+
+        mbox = QMessageBox()
+        mbox.setText('parameter gambar dari microscope telah diambil :)')
+        # mbox.setDetailedText("You are now a disciple and subject of the all-knowing Guru")
+        mbox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+        mbox.exec_()
+
+        # mqttc.loop_start()
+
+    def getParamCam1(self, event):
         frame = cv2.imread('image/Camera/cam'+str(self.iCam-1)+'.jpg')
 
         height_final_begin = int(
@@ -743,6 +790,7 @@ class App(QWidget):
         self.Mean_G_Cam_1.setText(str(self.mean_cam_G))
         self.Mean_B_Cam_1.setText(str(self.mean_cam_B))
 
+    def getParamCam2(self, event):
         frame = cv2.imread('image/Microscope/mic'+str(self.iMic-1)+'.jpg')
 
         height_final_begin = int(
@@ -809,96 +857,71 @@ class App(QWidget):
         self.Mean_R_Cam_2.setText(str(self.mean_mic_R))
         self.Mean_G_Cam_2.setText(str(self.mean_mic_G))
         self.Mean_B_Cam_2.setText(str(self.mean_mic_B))
-
-        sens_R = self.RGB_Red.text()
-        sens_G = self.RGB_Green.text()
-        sens_B = self.RGB_Blue.text()
-
-        class_ = self.Class_Type.text()
-        concentration = self.Class_Concentration.text()
-        row = [self.mean_cam_R, self.mean_cam_G, self.mean_cam_B, self.max_cam_R, self.max_cam_G, self.max_cam_B,
-               self.mean_mic_R, self.mean_mic_G, self.mean_mic_B, self.mean_mic_R, self.mean_mic_G, self.mean_mic_B, sens_R, sens_G, sens_B, class_, concentration]
-
-        print(row)
-        myData = open('data/data_alga.csv', 'w')
-        # writer = csv.writer(f)
-        csv_writer = csv.writer(myData)
-        csv_writer.writerow(row)
-        myData.close()
-
-        mbox = QMessageBox()
-        mbox.setText('parameter gambar dari microscope telah diambil :)')
-        # mbox.setDetailedText("You are now a disciple and subject of the all-knowing Guru")
-        mbox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
-        mbox.exec_()
-
-        # mqttc.loop_start()
-
     # def getParamMic(self,event):
 
-        # frame = cv2.imread('image/Microscope/mic'+str(self.iMic-1)+'.jpg')
+    # frame = cv2.imread('image/Microscope/mic'+str(self.iMic-1)+'.jpg')
 
-        # height_final_begin = int((self.begin.y() - 400)/320 * frame.shape[0])
-        # width_final_begin = int((self.begin.x() - 50)/480 * frame.shape[1])
+    # height_final_begin = int((self.begin.y() - 400)/320 * frame.shape[0])
+    # width_final_begin = int((self.begin.x() - 50)/480 * frame.shape[1])
 
-        # height_final_end = int((self.end.y() - 350)/320 * frame.shape[0])
-        # width_final_end = int((self.end.x() - 50)/480 * frame.shape[1])
+    # height_final_end = int((self.end.y() - 350)/320 * frame.shape[0])
+    # width_final_end = int((self.end.x() - 50)/480 * frame.shape[1])
 
-        # if width_final_end > frame.shape[1]:
-        #     width_final_end = frame.shape[1]
-        # if height_final_end > frame.shape[0]:
-        #     height_final_end = frame.shape[0]
+    # if width_final_end > frame.shape[1]:
+    #     width_final_end = frame.shape[1]
+    # if height_final_end > frame.shape[0]:
+    #     height_final_end = frame.shape[0]
 
-        # frame = frame[height_final_begin:height_final_end,
-        #               width_final_begin: width_final_end]
+    # frame = frame[height_final_begin:height_final_end,
+    #               width_final_begin: width_final_end]
 
-        # cv2.imshow('frame', frame)
+    # cv2.imshow('frame', frame)
 
-        # histR = cv2.calcHist([frame], [0], None, [256], [0, 256])
-        # histG = cv2.calcHist([frame], [1], None, [256], [0, 256])
-        # histB = cv2.calcHist([frame], [2], None, [256], [0, 256])
+    # histR = cv2.calcHist([frame], [0], None, [256], [0, 256])
+    # histG = cv2.calcHist([frame], [1], None, [256], [0, 256])
+    # histB = cv2.calcHist([frame], [2], None, [256], [0, 256])
 
-        # sumAllR = 0
-        # sumMulR = 0
-        # sumAllG = 0
-        # sumMulG = 0
-        # sumAllB = 0
-        # sumMulB = 0
+    # sumAllR = 0
+    # sumMulR = 0
+    # sumAllG = 0
+    # sumMulG = 0
+    # sumAllB = 0
+    # sumMulB = 0
 
-        # for i in range(0, 256):
-        #     if(histR[i] == np.max(histR)):
-        #         self.max_mic_R = i
-        #         # self.inEMaR.set(i)
-        #     sumAllR += histR[i]
-        #     sumMulR += i*histR[i]
-        #     if(histG[i] == np.max(histG)):
-        #         self.max_mic_G = i
-        #         # self.inEMaG.set(i)
-        #     sumAllG += histG[i]
-        #     sumMulG += i*histG[i]
-        #     if(histB[i] == np.max(histB)):
-        #         self.max_mic_B = i
-        #         # self.inEMaB.set(i)
-        #     sumAllB += histB[i]
-        #     sumMulB += i*histB[i]
+    # for i in range(0, 256):
+    #     if(histR[i] == np.max(histR)):
+    #         self.max_mic_R = i
+    #         # self.inEMaR.set(i)
+    #     sumAllR += histR[i]
+    #     sumMulR += i*histR[i]
+    #     if(histG[i] == np.max(histG)):
+    #         self.max_mic_G = i
+    #         # self.inEMaG.set(i)
+    #     sumAllG += histG[i]
+    #     sumMulG += i*histG[i]
+    #     if(histB[i] == np.max(histB)):
+    #         self.max_mic_B = i
+    #         # self.inEMaB.set(i)
+    #     sumAllB += histB[i]
+    #     sumMulB += i*histB[i]
 
-        # self.mean_mic_R = int(sumMulR/sumAllR)
-        # self.mean_mic_G = int(sumMulG/sumAllG)
-        # self.mean_mic_B = int(sumMulR/sumAllB)
+    # self.mean_mic_R = int(sumMulR/sumAllR)
+    # self.mean_mic_G = int(sumMulG/sumAllG)
+    # self.mean_mic_B = int(sumMulR/sumAllB)
 
-        # self.textbox_max_R_mic.setText(str(self.max_mic_R))
-        # self.textbox_max_G_mic.setText(str(self.max_mic_G))
-        # self.textbox_max_B_mic.setText(str(self.max_mic_B))
+    # self.textbox_max_R_mic.setText(str(self.max_mic_R))
+    # self.textbox_max_G_mic.setText(str(self.max_mic_G))
+    # self.textbox_max_B_mic.setText(str(self.max_mic_B))
 
-        # self.textbox_mean_R_mic.setText(str(self.mean_mic_R))
-        # self.textbox_mean_G_mic.setText(str(self.mean_mic_G))
-        # self.textbox_mean_B_mic.setText(str(self.mean_mic_B))
+    # self.textbox_mean_R_mic.setText(str(self.mean_mic_R))
+    # self.textbox_mean_G_mic.setText(str(self.mean_mic_G))
+    # self.textbox_mean_B_mic.setText(str(self.mean_mic_B))
 
-        # mbox = QMessageBox()
-        # mbox.setText('parameter gambar dari microscope telah diambil :)')
-        # # mbox.setDetailedText("You are now a disciple and subject of the all-knowing Guru")
-        # mbox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
-        # mbox.exec_()
+    # mbox = QMessageBox()
+    # mbox.setText('parameter gambar dari microscope telah diambil :)')
+    # # mbox.setDetailedText("You are now a disciple and subject of the all-knowing Guru")
+    # mbox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+    # mbox.exec_()
 
     def runTraining(classification):
         if classification:
